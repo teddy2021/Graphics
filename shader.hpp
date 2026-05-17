@@ -18,9 +18,10 @@ class shader{
 		~shader();
 
 		bool use();
-		bool setUniform(glm::mat4 val);
-		bool setUniform(glm::vec3 val);
-		bool setUniform(float val);
+		int getUniformID(std::string name);
+		bool setUniform(std::string name, glm::mat4 val);
+		bool setUniform(std::string name, glm::vec3 val);
+		bool setUniform(std:: string name, float val);
 
 
 };

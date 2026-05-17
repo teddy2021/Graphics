@@ -21,6 +21,7 @@ endif()
 
 add_executable(Graphics main.cpp
     screen.hpp screen.cpp
+    shader.hpp shader.cpp
     Logger.hpp Logger.cpp)
 
 target_include_directories(Graphics PRIVATE

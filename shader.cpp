@@ -11,6 +11,9 @@
 #include <vector>
 using std::string;
 
+shader::~shader(){
+	glDeleteProgram(program);
+}
 
 shader::shader(string path): program(compile(path)){
 }
@@ -96,3 +99,50 @@ GLuint shader::compile(string path){
 
 	return program;
 }
+
+int shader::getUniformID(string name){
+	int id = glGetUniformLocation(program, name.c_str());
+	if(-1 == id){  
+		Logger::GetInstance().log("[shader::getUniformID] could not get id for uniform: " + name, debug_level::ERROR);
+	}
+	return id;
+}
+
+
+bool shader::setUniform(string name, glm::mat4 val){
+	int id = getUniformID(name);
+	if(-1 == id){
+		return false;
+	}
+
+	glUniformMatrix4fv(id, 1, GL_FALSE, &val[0][0]);
+	return true;
+}
+
+bool shader::setUniform(string name, glm::vec3 val){
+	int id = getUniformID(name);
+	if(-1 == id){
+		return false;
+	}
+
+	glUniform3fv(id, 1, &val[0]);
+	return true;
+}
+
+bool shader::setUniform(string name, float val){
+	int id = getUniformID(name);
+	if(-1 == id){
+		return false;
+	}
+
+	glUniform1fv(id, 1, &val);
+	return true;
+}
+
+
+bool shader::use(){
+	glUseProgram(program);
+	return true;
+}
+
+
