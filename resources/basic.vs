@@ -1,8 +1,11 @@
-#version 460 core
-out vec4 FragColor;
+#version 440 core
 
-uniform vec3 colour;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 texCoord;
+
+out vec2 TexCoord;
 
 void main(){
-	FragColor = vec4(colour, 1);
+	gl_Position = vec4(aPos, 1);
+	TexCoord = texCoord;
 }

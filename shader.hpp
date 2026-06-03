@@ -15,6 +15,11 @@ class shader{
 
 	public:
 		shader(std::string path);
+		shader(shader && other)noexcept : program(other.program){
+			other.program = 0;
+		}
+		shader(const shader &) = delete;
+
 		~shader();
 
 		bool use();

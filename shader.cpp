@@ -89,7 +89,7 @@ GLuint shader::compile(string path){
 	if(!res){
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLen);
 		std::vector<char> err_msg(infoLogLen + 1);
-		glGetShaderInfoLog(fragmentId, infoLogLen, NULL, &err_msg[0]);
+		glGetProgramInfoLog(program, infoLogLen, NULL, &err_msg[0]);
 		Logger::GetInstance().log("[shader::compile] failed to compile fragment shader " + fragment_path + "\n\t" + string(err_msg.begin(), err_msg.end()), debug_level::ERROR);
 		return 0;
 	}
@@ -101,9 +101,10 @@ GLuint shader::compile(string path){
 }
 
 int shader::getUniformID(string name){
+	use();
 	int id = glGetUniformLocation(program, name.c_str());
 	if(-1 == id){  
-		Logger::GetInstance().log("[shader::getUniformID] could not get id for uniform: " + name, debug_level::ERROR);
+		Logger::GetInstance().log("[shader::getUniformID] could not get id for uniform: " + name + " (id=" + std::to_string(id) + ")", debug_level::ERROR);
 	}
 	return id;
 }
@@ -115,6 +116,7 @@ bool shader::setUniform(string name, glm::mat4 val){
 		return false;
 	}
 
+	use();
 	glUniformMatrix4fv(id, 1, GL_FALSE, &val[0][0]);
 	return true;
 }
@@ -125,6 +127,7 @@ bool shader::setUniform(string name, glm::vec3 val){
 		return false;
 	}
 
+	use();
 	glUniform3fv(id, 1, &val[0]);
 	return true;
 }
@@ -135,6 +138,7 @@ bool shader::setUniform(string name, float val){
 		return false;
 	}
 
+	use();
 	glUniform1fv(id, 1, &val);
 	return true;
 }

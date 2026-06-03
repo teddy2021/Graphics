@@ -1,9 +1,11 @@
 
 #include "screen.hpp"
+#include "mesh.hpp"
 #include "Logger.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <algorithm>
 #include <memory>
 #include <string>
 using std::string;
@@ -46,15 +48,16 @@ void screen::init(int w, int h, const string& title){
 	glClearColor(0, 0, 0, 1);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glViewport(0,0,w,h);
 }
 
 
-screen::screen(int w, int h){
+screen::screen(int w, int h): drawn_objects(){
 	Logger::GetInstance().log("[screen::screen] constructor entered with args w: " + std::to_string(w) + " and h: " + std::to_string(h), debug_level::DEBUG);
 	init(w, h, "No Title");
 }
 
-screen::screen(int w, int h, string title){
+screen::screen(int w, int h, string title): drawn_objects(){
 	Logger::GetInstance().log("[screen::screen] constructor entered with args w: " + std::to_string(w) + ", h: " + std::to_string(h) + ", and title '"+ title +"'", debug_level::DEBUG);
 	init(w, h, title);
 }
@@ -78,6 +81,9 @@ void screen::enterDrawState(){
 
 void screen::draw(){
 	Logger::GetInstance().log("[screen::draw] begin", debug_level::DEBUG);
+	for(int i = 0; i < drawn_objects.size(); i += 1){
+		drawn_objects[i]->draw();
+	}
 }
 
 void screen::exitDrawState(){
@@ -86,4 +92,14 @@ void screen::exitDrawState(){
 	glfwPollEvents();
 }
 
+void screen::addMesh(mesh && m){
+	drawn_objects.push_back(std::make_unique<mesh>(std::move(m)));
+}
 
+void screen::removeMesh(const mesh & m){
+	auto pos = std::find_if(drawn_objects.begin(), drawn_objects.end(), [&](auto& ptr){return *ptr == m;});
+	if(drawn_objects.end() == pos){
+		return;
+	}
+	drawn_objects.erase(pos);
+}

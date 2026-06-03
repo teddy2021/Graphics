@@ -19,9 +19,14 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/stb_image.h")
          "${CMAKE_SOURCE_DIR}/stb_image.h")
 endif()
 
+# Copy resources to build directory so relative shader paths work
+file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
+
 add_executable(Graphics main.cpp
     screen.hpp screen.cpp
+    texture.hpp texture.cpp
     shader.hpp shader.cpp
+    mesh.hpp mesh.cpp
     Logger.hpp Logger.cpp)
 
 target_include_directories(Graphics PRIVATE

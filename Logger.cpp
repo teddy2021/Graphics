@@ -28,22 +28,25 @@ void Logger::log(std::string msg, debug_level level){
 	string out;
 	switch(level){
 		case debug_level::ERROR:
-			if(detail < debug_level::ERROR){
+			if(level < detail){
 				return;
 			}
 			out = "[Error][" + human_time + "]: " + msg;
 			break;
 		case debug_level::WARN:
-			if(detail < debug_level::WARN){
+			if(level < detail){
 				return;
 			}
 			out = "[Warning][" + human_time + "]: " + msg;
 			break;
 		case debug_level::INFO:
+			if(level < detail){
+				return;
+			}
 			out = "[Information][" + human_time + "]: " + msg;
 			break;
 		case debug_level::DEBUG:
-			if(detail < debug_level::DEBUG){
+			if(level < detail){
 				return;
 			}
 			out = "[Debug][" + human_time + "]: " + msg;
