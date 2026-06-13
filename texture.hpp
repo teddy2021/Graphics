@@ -12,6 +12,7 @@ class texture{
 
 	public:
 
+		~texture();
 		texture(std::string path);
 		texture(texture && other): id(other.id){
 			other.id = 0;

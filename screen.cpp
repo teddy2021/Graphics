@@ -47,6 +47,11 @@ void screen::init(int w, int h, const string& title){
 	glfwSetInputMode(window.get(), GLFW_STICKY_KEYS, GL_TRUE);
 	glClearColor(0, 0, 0, 1);
 	glEnable(GL_BLEND);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_CULL_FACE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glViewport(0,0,w,h);
 }
@@ -93,12 +98,15 @@ void screen::exitDrawState(){
 }
 
 void screen::addMesh(mesh && m){
+	Logger::GetInstance().log("[screen::addMesh] begin", debug_level::DEBUG);
 	drawn_objects.push_back(std::make_unique<mesh>(std::move(m)));
 }
 
 void screen::removeMesh(const mesh & m){
+	Logger::GetInstance().log("[screen::removeMesh] begin", debug_level::DEBUG);
 	auto pos = std::find_if(drawn_objects.begin(), drawn_objects.end(), [&](auto& ptr){return *ptr == m;});
 	if(drawn_objects.end() == pos){
+		Logger::GetInstance().log("[screen::removeMesh] mesh not found", debug_level::WARN);
 		return;
 	}
 	drawn_objects.erase(pos);

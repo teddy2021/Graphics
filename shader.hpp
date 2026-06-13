@@ -1,4 +1,5 @@
 
+#pragma once
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -6,7 +7,6 @@
 #include <string>
 
 
-#pragma once
 
 class shader{
 	private:

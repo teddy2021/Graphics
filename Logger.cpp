@@ -13,6 +13,7 @@ using std::string;
 
 Logger::Logger(string path, debug_level dl): detail(dl), logfile(path){
 	outstream = std::ofstream(logfile);
+	log("[Logger::Logger] logger initialized, log file: " + path, debug_level::INFO);
 }
 
 
@@ -61,12 +62,14 @@ void Logger::log(std::string msg, debug_level level){
 
 
 void Logger::SetLevel(debug_level lvl){
+	log("[Logger::SetLevel] changing log level", debug_level::INFO);
 	detail = lvl;
 }
 
 
 Logger::~Logger(){
 	if(outstream.is_open()){
+		log("[Logger::~Logger] shutting down logger", debug_level::INFO);
 		outstream.flush();
 		outstream.close();
 	}

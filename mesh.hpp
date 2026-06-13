@@ -24,6 +24,7 @@ class mesh{
 		GLuint vbo;
 		GLuint ebo;
 
+		bool upload();
 		bool bind();
 
 	public:
@@ -31,18 +32,7 @@ class mesh{
 		mesh(std::string path);
 		mesh(std::vector<float> vertices, std::vector<GLuint> indeces);
 		mesh(std::vector<float> vertices, std::vector<GLuint> indeces, std::string path);
-		mesh(mesh && other) noexcept:
-			ebo(other.ebo),
-			vbo(other.vbo),
-			vao(other.vao),
-			shader_prog(std::make_unique<shader>(std::move(*other.shader_prog))),
-			indeces(other.indeces),
-			vertices(other.vertices),
-			tex(std::make_unique<texture>(std::move(*other.tex))){
-				other.ebo = 0;
-				other.vbo = 0;
-				other.vao = 0;
-			};
+		mesh(mesh && other) noexcept;
 
 
 		void setShader(shader&& s);

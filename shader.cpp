@@ -12,14 +12,16 @@
 using std::string;
 
 shader::~shader(){
+	Logger::GetInstance().log("[shader::~shader] begin", debug_level::DEBUG);
 	glDeleteProgram(program);
 }
 
 shader::shader(string path): program(compile(path)){
+	Logger::GetInstance().log("[shader::shader] constructed with path: " + path, debug_level::DEBUG);
 }
 
 GLuint shader::compile(string path){
-	const string vertex_path = path + ".vs";
+	const string vertex_path = path + ".vs.glsl";
 	GLuint program = 0;
 
 	GLuint vertexId = glCreateShader(GL_VERTEX_SHADER);
@@ -37,7 +39,7 @@ GLuint shader::compile(string path){
 		return 0;
 	}
 
-	const string fragment_path = path + ".fs";
+	const string fragment_path = path + ".fs.glsl";
 	GLuint fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
 	string fragmentCode;
 	std::ifstream fragmentStream(fragment_path, std::ios::in);
@@ -90,7 +92,7 @@ GLuint shader::compile(string path){
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLen);
 		std::vector<char> err_msg(infoLogLen + 1);
 		glGetProgramInfoLog(program, infoLogLen, NULL, &err_msg[0]);
-		Logger::GetInstance().log("[shader::compile] failed to compile fragment shader " + fragment_path + "\n\t" + string(err_msg.begin(), err_msg.end()), debug_level::ERROR);
+		Logger::GetInstance().log("[shader::compile] failed to link shaders\n\t" + string(err_msg.begin(), err_msg.end()), debug_level::ERROR);
 		return 0;
 	}
 
@@ -111,6 +113,7 @@ int shader::getUniformID(string name){
 
 
 bool shader::setUniform(string name, glm::mat4 val){
+	Logger::GetInstance().log("[shader::setUniform] (mat4) name: " + name, debug_level::DEBUG);
 	int id = getUniformID(name);
 	if(-1 == id){
 		return false;
@@ -122,6 +125,7 @@ bool shader::setUniform(string name, glm::mat4 val){
 }
 
 bool shader::setUniform(string name, glm::vec3 val){
+	Logger::GetInstance().log("[shader::setUniform] (vec3) name: " + name, debug_level::DEBUG);
 	int id = getUniformID(name);
 	if(-1 == id){
 		return false;
@@ -133,6 +137,7 @@ bool shader::setUniform(string name, glm::vec3 val){
 }
 
 bool shader::setUniform(string name, float val){
+	Logger::GetInstance().log("[shader::setUniform] (float) name: " + name + " val: " + std::to_string(val), debug_level::DEBUG);
 	int id = getUniformID(name);
 	if(-1 == id){
 		return false;
@@ -145,6 +150,7 @@ bool shader::setUniform(string name, float val){
 
 
 bool shader::use(){
+	Logger::GetInstance().log("[shader::use] begin", debug_level::DEBUG);
 	glUseProgram(program);
 	return true;
 }
